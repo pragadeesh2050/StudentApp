@@ -1,0 +1,14 @@
+﻿@model StudentApp.ViewModels.BusinessRoleViewModel
+
+
+@using (Html.BeginCollectionItem("UserRolesWithBusiness"))
+{
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          @Html.HiddenFor(model => model.Role )
+          @Html.DropDownListFor(model => model.ID, Model.Businesses, String.Empty, new { @class = "form-control" })
+        </div>
+      </div>
+    </div>
+}

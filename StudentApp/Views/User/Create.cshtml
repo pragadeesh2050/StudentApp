@@ -1,0 +1,134 @@
+﻿@using StudentApp.ViewModels
+@model StudentApp.ViewModels.UserViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <fieldset>
+      <legend>
+        Create User
+      </legend>
+    </fieldset>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+          <div class="col-md-6">
+            @Html.EditorFor(model => model.LastName)
+            @Html.EditorFor(model => model.FirstName)
+          </div>
+          <div class="col-md-6">
+            <fieldset>
+              <legend>
+                Roles
+              </legend>
+            </fieldset>
+            <div class="row">
+              <div class="col-md-12">
+                @for (int i = 0; i < Model.RolesWithoutBusiness.Count; i++)
+                {
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="UserRolesWithoutBusiness[@i].Role" value="@Model.RolesWithoutBusiness[i]"
+                               @( Model.UserRolesWithoutBusiness != null &&
+                        Model.UserRolesWithoutBusiness.Select(x => x.Role ).Contains( Model.RolesWithoutBusiness[i] ) ? "checked": "" )/>
+                        @Model.RolesWithoutBusiness[i]
+                      </label>
+                    </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <fieldset>
+              <legend>
+                Businesses
+              </legend>
+            </fieldset>
+            <div id="newBusiness">
+              @if (Model.UserRolesWithBusiness != null)
+              {
+                foreach (var item in Model.UserRolesWithBusiness.Where(x => String.IsNullOrEmpty(x.Role)) )
+                {
+                  @Html.Partial("~/Views/Shared/EditorTemplates/NewBusiness.cshtml", item)
+                }
+              }
+            </div>
+            @Html.ActionLink("Add New Business", null, null, new{ href = "javascript:void(0);",id = "add-new-business-to-user" })
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          @foreach (var otherrolewithbusiness in Model.OtherRolesWithBusiness)
+          {
+              <div class="col-md-4">
+                <fieldset>
+                  <legend>
+                    @otherrolewithbusiness
+                  </legend>
+                </fieldset>
+                <div id="newBusiness-@(otherrolewithbusiness)">
+                  @{          
+                      IEnumerable<BusinessRoleViewModel> CurrentBusinessForThisRole = null;
+                      if (Model.UserRolesWithBusiness != null ){
+                        CurrentBusinessForThisRole = Model.UserRolesWithBusiness.Where(c => c.Role == otherrolewithbusiness);
+                      }
+                  }
+                  @if (CurrentBusinessForThisRole != null)
+                  {
+                    foreach (var item in CurrentBusinessForThisRole)
+                    {
+                          @Html.Partial("~/Views/Shared/EditorTemplates/NewBusiness.cshtml", item )
+                    }
+                  }
+                </div>
+                @Html.ActionLink("Add New Business", null, null, new { href = "javascript:void(0);", id = String.Format("add-new-business-to-user-{0}", otherrolewithbusiness) })
+              </div>
+          }
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <hr />
+            <input type="submit" value="Create" class="btn btn-primary" />
+            @Html.ActionLink("Cancel", "Index", null, htmlAttributes: new { @class = "btn btn-default" })
+          </div>
+        </div>
+    }
+  </div>
+</div>
+@section Scripts
+{
+  <script type="text/javascript">
+    $(function () {
+      $('#add-new-business-to-user').on('click', function () {
+        console.log('add new business');
+        $.get('/User/AddNewBusiness', function (template) {
+          $('#newBusiness').append(template);
+        });
+      });
+
+      @foreach (var otherrolewithbusiness in Model.OtherRolesWithBusiness)
+      {
+          <text>
+            $('#add-new-business-to-user-@(otherrolewithbusiness)').on('click', function () {
+              console.log('add new business-@(otherrolewithbusiness)');
+               $.get('/User/AddNewBusiness', {'Role': "@(otherrolewithbusiness)"}, function(template) {
+                $('#newBusiness-@(otherrolewithbusiness)').append(template);
+               });
+            });
+         </text>
+      }
+    });
+  </script>
+  
+}
+

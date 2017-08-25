@@ -1,0 +1,27 @@
+﻿@model StudentApp.Models.Course
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      Edit Course
+    </h3>
+  </div>
+  <div class="panel-body">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.EditorFor(model => model.Title)
+        @Html.EditorFor(model => model.Credits)
+        @Html.EditorFor(model => model.DepartmentID, "ComboBox", new { Items = ViewBag.DepartmentID, hint="Select any department", allowBlank = true })
+        <hr />
+        <input type="submit" value="Save" class="btn btn-primary" />
+        @Html.ActionLink("Cancel", "Index", null, htmlAttributes: new { @class = "btn btn-default" })
+    }
+  </div>
+</div>

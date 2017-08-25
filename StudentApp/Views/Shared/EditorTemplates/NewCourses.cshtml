@@ -1,0 +1,13 @@
+﻿@model StudentApp.Models.Course
+
+
+@using (Html.BeginCollectionItem("Courses"))
+{
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          @Html.DropDownListFor(model => model.CourseID, (SelectList)ViewBag.Courses,String.Empty,new {@class = "form-control" })
+        </div>
+      </div>
+    </div>
+}

@@ -1,0 +1,25 @@
+﻿@model object
+@using StudentApp.Utility
+
+
+
+<div class="form-group@(Html.ValidationErrorFor(m => m, " error has-error"))">
+  @Html.LabelFor(m => m, new { @class = "control-label" })
+  <div class="controls">
+    @Html.DropDownListFor(m => m, (SelectList)ViewBag.Items,
+    ((bool)ViewBag.allowBlank ? String.Empty : null),
+    new { @class = "form-control" })
+
+
+    @{
+        if (!String.IsNullOrEmpty(ViewBag.hint))
+        {
+            <p class="help-block">
+              @ViewBag.hint
+            </p>
+        }
+    }
+    @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+  </div>
+
+</div>
