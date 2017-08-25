@@ -29,6 +29,7 @@ namespace StudentApp.Controllers
             return View(user);
         }
 
+        [OutputCache(NoStore = true, Duration = 0)]
         public PartialViewResult AddNewBusiness(string Role)
         {
             BusinessRoleViewModel bvm = new BusinessRoleViewModel();
